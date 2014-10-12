@@ -201,6 +201,7 @@ public class ProtobufClient {
 			byteBuf.getBytes(byteBuf.readerIndex(), checkSumStream,
 					byteBuf.readableBytes());
 			byteBuf.setByte(0, checkSumStream.getCheckSum());
+			logger.info("send cmd={}",cmd);
 			channel.write(byteBuf.resetReaderIndex());
 		} catch (IOException e) {
 			e.printStackTrace();

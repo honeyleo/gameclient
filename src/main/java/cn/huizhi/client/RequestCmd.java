@@ -3,6 +3,7 @@ package cn.huizhi.client;
 import java.util.List;
 import java.util.Map;
 
+import cn.huizhi.car.pb.player.UserPropertyReq_Protocol.UserPropertyReqPro;
 import cn.huizhi.net.AppMessage;
 import cn.huizhi.util.MessageBuild;
 import cn.huizhi.util.MessageBuild.FieldObject;
@@ -39,6 +40,7 @@ public class RequestCmd {
 	static {
 		add(new MessageCmd("玩家ID登陆",AppMessage.CMD_LOGIN_BY_PID_REQ, LoginByPidReq.getDefaultInstance().newBuilderForType()));
 		add(new MessageCmd("公告", AppMessage.CMD_ADVER_REQ, null));
+		add(new MessageCmd("用户财产信息", AppMessage.CMD_USER_PROPERTY_REQ, UserPropertyReqPro.getDefaultInstance().newBuilderForType()));
 	}
 	
 	public static List<String> names() {

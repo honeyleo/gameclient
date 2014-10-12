@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -58,12 +59,17 @@ public class ClientDecoderHandler extends SimpleChannelInboundHandler<ByteBuf> {
 			data = new byte[dataLength];
 			msg.readBytes(data);
 			if(messageCmd.message != null && this.pid == 0 && data.length > 0) {
-				Message message = messageCmd.message.getParserForType().parseFrom(data);
-				StringBuilder sb = new StringBuilder();
-				sb.append("====================").append(messageCmd.name).append("======================\n");
-				sb.append(message.toString());
-				sb.append("====================").append(messageCmd.name).append("======================\n");
-				UIMain.jTextArea1.append(sb.toString());
+				try {
+					Message message = messageCmd.message.getParserForType().parseFrom(data);
+					StringBuilder sb = new StringBuilder();
+					sb.append("====================").append(messageCmd.name).append("======================\n");
+					sb.append(message.toString());
+					sb.append("====================").append(messageCmd.name).append("======================\n");
+					LOG.info(sb.toString());
+					UIMain.jTextArea1.append(sb.toString());
+				} catch(Throwable e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		switch (cmd) {
