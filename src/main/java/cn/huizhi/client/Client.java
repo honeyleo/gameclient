@@ -30,7 +30,7 @@ import cn.huizhi.net.MessageHelper;
 
 import com.google.protobuf.Message;
 
-public class ProtobufClient {
+public class Client {
 
 	private int pid;
 	private String ip;
@@ -45,27 +45,27 @@ public class ProtobufClient {
 	public final CheckSumStream checkSumStream = new cn.huizhi.net.CheckSumStream();
 	
 	private static ChannelGroup allChannels = new DefaultChannelGroup(new DefaultEventExecutorGroup(1).next());
-	private static Logger logger = LoggerFactory.getLogger(ProtobufClient.class);
+	private static Logger logger = LoggerFactory.getLogger(Client.class);
 
-	private ProtobufClient(String ip, int port) {
+	private Client(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
 	}
-	public static ProtobufClient start(String ip, int port) {
-		ProtobufClient protobufClient = new ProtobufClient(ip, port);
+	public static Client start(String ip, int port) {
+		Client protobufClient = new Client(ip, port);
 		protobufClient.start();
 		return protobufClient;
 	}
 	
-	public static ProtobufClient start(int pid, String ip, int port) {
-		ProtobufClient protobufClient = new ProtobufClient(ip, port);
+	public static Client start(int pid, String ip, int port) {
+		Client protobufClient = new Client(ip, port);
 		protobufClient.pid = pid;
 		protobufClient.start();
 		return protobufClient;
 	}
 	
-	public static ProtobufClient asynStart(String ip, int port, int pid, int cmd, Message.Builder builder) {
-		ProtobufClient protobufClient = new ProtobufClient(ip, port);
+	public static Client asynStart(String ip, int port, int pid, int cmd, Message.Builder builder) {
+		Client protobufClient = new Client(ip, port);
 		protobufClient.pid = pid;
 		protobufClient.asynStart(cmd, builder);
 		return protobufClient;
@@ -88,9 +88,9 @@ public class ProtobufClient {
 					protected void initChannel(SocketChannel ch) throws Exception {
 						ch.pipeline()
 							.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(4096, 0, 2, 0, 0))
-							.addLast(new ClientDecoderHandler(ProtobufClient.this, pid))
+							.addLast(new ClientHandler(Client.this, pid))
 							.addLast("frameEncoder", new LengthFieldPrepender(2))
-							.addLast(new SimpleChannelOutboundHandler())
+							.addLast(new ClientOutboundHandler())
 							;
 					}
 				});
@@ -119,9 +119,9 @@ public class ProtobufClient {
 					protected void initChannel(SocketChannel ch) throws Exception {
 						ch.pipeline()
 							.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(4096, 0, 2, 0, 0))
-							.addLast(new ClientDecoderHandler(ProtobufClient.this, pid))
+							.addLast(new ClientHandler(Client.this, pid))
 							.addLast("frameEncoder", new LengthFieldPrepender(2))
-							.addLast(new SimpleChannelOutboundHandler())
+							.addLast(new ClientOutboundHandler())
 							;
 					}
 				});
@@ -132,7 +132,7 @@ public class ProtobufClient {
 				public void operationComplete(ChannelFuture future) throws Exception {
 					if(future.isSuccess()) {
 						channel = future.channel();
-						ProtobufClient.this.send(cmd, builder);
+						Client.this.send(cmd, builder);
 					}
 				}
 			});
@@ -187,8 +187,8 @@ public class ProtobufClient {
 	private void sendCheck(final int cmd, Message.Builder builder) {
 		ByteBuf byteBuf = PooledByteBufAllocator.DEFAULT.buffer(64);
 		byteBuf.writeByte(0);
-		int msgOffset = ProtobufClient.this.msgOffset.get();
-		byteBuf.writeByte(calculateVerificationBytes(ProtobufClient.this.msgOffset.incrementAndGet()));
+		int msgOffset = Client.this.msgOffset.get();
+		byteBuf.writeByte(calculateVerificationBytes(Client.this.msgOffset.incrementAndGet()));
 		short offset = (short)(msgOffset & 7);
 		short cmdTmp =(short) (offset << 13 | 0x1fff & cmd);
 		byteBuf.writeShort(cmdTmp);

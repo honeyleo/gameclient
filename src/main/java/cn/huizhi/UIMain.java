@@ -1,4 +1,4 @@
-package cn.huizhi.client;
+package cn.huizhi;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -8,8 +8,10 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.table.TableModel;
 
-import cn.huizhi.client.RequestCmd.MessageCmd;
+import cn.huizhi.client.Client;
 import cn.huizhi.net.AppMessage;
+import cn.huizhi.net.RequestCmd;
+import cn.huizhi.net.RequestCmd.MessageCmd;
 import cn.huizhi.util.Config;
 import cn.huizhi.util.MessageBuild;
 
@@ -24,7 +26,7 @@ public class UIMain extends javax.swing.JFrame {
 
 	private String ip = Config.getValue("ip");
 	private int port = Config.getIntValue("port");
-	private ProtobufClient client;
+	private Client client;
 	/**
 	 * 
 	 */
@@ -79,7 +81,7 @@ public class UIMain extends javax.swing.JFrame {
 					MessageBuild.build(builder, map);
 				}
 				if(messageCmd.cmd == AppMessage.CMD_LOGIN_BY_PID_REQ) {
-					client = ProtobufClient.start(ip, port);
+					client = Client.start(ip, port);
 				}
 				
 				if(client != null) {

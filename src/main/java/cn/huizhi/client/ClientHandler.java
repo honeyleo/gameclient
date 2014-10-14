@@ -6,38 +6,35 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.io.IOException;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cn.huizhi.client.ResponseCmd.MessageCmd;
+import cn.huizhi.UIMain;
 import cn.huizhi.net.AppMessage;
 import cn.huizhi.net.MessageHelper;
-import cn.huizhi.util.Config;
+import cn.huizhi.net.ResponseCmd;
+import cn.huizhi.net.ResponseCmd.MessageCmd;
 
 import com.google.protobuf.Message;
 
-public class ClientDecoderHandler extends SimpleChannelInboundHandler<ByteBuf> {
+public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
 	private static final Logger LOG = LoggerFactory.getLogger("o");
+	
 	private int pid;
+	Client client;
 	
-	ProtobufClient protobufClient;
-	ScheduledFuture<?> skillFireFuture = null;
-	ScheduledFuture<?> uploadScorefuture = null;
-	
-	static final int uploadScoreRate = Config.getIntValue("upload.score.rate");
-	
-	public ClientDecoderHandler() {
+	public ClientHandler() {
 		
 	}
 	
-	public ClientDecoderHandler(ProtobufClient protobufClient, int pid) {
-		this.protobufClient = protobufClient;
+	public ClientHandler(Client protobufClient, int pid) {
+		this.client = protobufClient;
 		this.pid = pid;
 	}
+	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg)
 			throws Exception {
@@ -96,16 +93,16 @@ public class ClientDecoderHandler extends SimpleChannelInboundHandler<ByteBuf> {
 			
 			@Override
 			public void run() {
-				if(protobufClient.is) {
+				if(client.is) {
 					ByteBuf byteBuf = PooledByteBufAllocator.DEFAULT.buffer(64);
 					byteBuf.writeByte(0);
-					byteBuf.writeByte(protobufClient.msgOffset.getAndIncrement());
+					byteBuf.writeByte(client.msgOffset.getAndIncrement());
 					byteBuf.writeShort(AppMessage.CMD_PING);
 					byteBuf.skipBytes(1);
 					try {
-						byteBuf.getBytes(byteBuf.readerIndex(), protobufClient.checkSumStream,
+						byteBuf.getBytes(byteBuf.readerIndex(), client.checkSumStream,
 								byteBuf.readableBytes());
-						byteBuf.setByte(0, protobufClient.checkSumStream.getCheckSum());
+						byteBuf.setByte(0, client.checkSumStream.getCheckSum());
 						ctx.channel().write(byteBuf);
 					} catch (IOException e) {
 						e.printStackTrace();

@@ -1,13 +1,12 @@
-package cn.huizhi.client;
+package cn.huizhi.net;
 
 import java.util.List;
 import java.util.Map;
 
-import cn.huizhi.car.pb.player.UserPropertyReq_Protocol.UserPropertyReqPro;
-import cn.huizhi.net.AppMessage;
+import cn.huizhi.message.player.LoginByPidReqPro.LoginByPidReq;
+import cn.huizhi.message.player.PlayerInfoReqPro.PlayerInfoReq;
 import cn.huizhi.util.MessageBuild;
 import cn.huizhi.util.MessageBuild.FieldObject;
-import cn.lfyun.network.message.LoginByPidReq_Protocol.LoginByPidReq;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -39,7 +38,7 @@ public class RequestCmd {
 	
 	static {
 		add(new MessageCmd("玩家ID登陆",AppMessage.CMD_LOGIN_BY_PID_REQ, LoginByPidReq.getDefaultInstance().newBuilderForType()));
-		add(new MessageCmd("用户财产信息", AppMessage.CMD_USER_PROPERTY_REQ, UserPropertyReqPro.getDefaultInstance().newBuilderForType()));
+		add(new MessageCmd("玩家信息", AppMessage.CMD_USER_PROPERTY_REQ, PlayerInfoReq.getDefaultInstance().newBuilderForType()));
 	}
 	
 	public static List<String> names() {

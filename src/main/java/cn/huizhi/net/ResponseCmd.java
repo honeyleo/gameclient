@@ -1,9 +1,8 @@
-package cn.huizhi.client;
+package cn.huizhi.net;
 
 import java.util.Map;
 
-import cn.huizhi.car.pb.player.UserPropertyAck_Protocol.UserPropertyAckPro;
-import cn.huizhi.net.AppMessage;
+import cn.huizhi.message.player.PlayerInfoAckPro.PlayerInfoAck;
 
 import com.google.common.collect.Maps;
 import com.google.protobuf.Message;
@@ -32,6 +31,6 @@ public class ResponseCmd {
 	}
 	
 	static {
-		add(new MessageCmd("用户财产信息", AppMessage.CMD_USER_PROPERTY_ACK, UserPropertyAckPro.getDefaultInstance()));
+		add(new MessageCmd("玩家信息", AppMessage.CMD_USER_PROPERTY_ACK, PlayerInfoAck.getDefaultInstance()));
 	}
 }
