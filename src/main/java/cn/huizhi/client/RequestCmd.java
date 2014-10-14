@@ -39,7 +39,6 @@ public class RequestCmd {
 	
 	static {
 		add(new MessageCmd("玩家ID登陆",AppMessage.CMD_LOGIN_BY_PID_REQ, LoginByPidReq.getDefaultInstance().newBuilderForType()));
-		add(new MessageCmd("公告", AppMessage.CMD_ADVER_REQ, null));
 		add(new MessageCmd("用户财产信息", AppMessage.CMD_USER_PROPERTY_REQ, UserPropertyReqPro.getDefaultInstance().newBuilderForType()));
 	}
 	
