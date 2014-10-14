@@ -4,7 +4,6 @@ import java.util.Map;
 
 import cn.huizhi.car.pb.player.UserPropertyAck_Protocol.UserPropertyAckPro;
 import cn.huizhi.net.AppMessage;
-import cn.lfyun.network.message.AdverAck_Protocol.AdverAckPro;
 
 import com.google.common.collect.Maps;
 import com.google.protobuf.Message;
@@ -33,7 +32,6 @@ public class ResponseCmd {
 	}
 	
 	static {
-		add(new MessageCmd("公告", AppMessage.CMD_ADVER_ACK, AdverAckPro.getDefaultInstance()));
 		add(new MessageCmd("用户财产信息", AppMessage.CMD_USER_PROPERTY_ACK, UserPropertyAckPro.getDefaultInstance()));
 	}
 }
